@@ -3,6 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Core\Themes\ThemeManager;
+
+use App\Core\Tenancy\TenantManager;
+use App\Core\Tenancy\SubdomainTenantResolver;
+use App\Core\Hooks\HookManager;
+use App\Core\Modules\ModuleManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +18,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(TenantManager::class);
+        $this->app->singleton(SubdomainTenantResolver::class);
+        $this->app->singleton(HookManager::class);
+
+        $this->app->singleton(ModuleManager::class, fn($app) =>
+            new ModuleManager($app->make(TenantManager::class))
+        );
+
+        $this->app->singleton(ThemeManager::class, fn($app) =>
+            new ThemeManager($app->make(TenantManager::class))
+        );
     }
 
     /**
@@ -19,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Si hay tenant resuelto, apuntamos a su tema
+        if (app()->bound(ThemeManager::class)) {
+            $tm = app(ThemeManager::class);
+            View::addLocation($tm->viewPath());
+        }
     }
 }
