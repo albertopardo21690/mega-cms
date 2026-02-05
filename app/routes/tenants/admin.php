@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TaxonomyController;
+use App\Http\Controllers\Admin\MediaController;
 
 Route::middleware(['tenant'])->prefix('admin')->group(function () {
 
@@ -38,8 +40,20 @@ Route::middleware(['tenant'])->prefix('admin')->group(function () {
         ->whereNumber('id')
         ->name('admin.contents.delete');
 
+    // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings');
     Route::post('/settings/save', [SettingsController::class, 'save'])->name('admin.settings.save');
     Route::post('/settings/delete', [SettingsController::class, 'delete'])->name('admin.settings.delete');
     Route::post('/settings/flush', [SettingsController::class, 'flush'])->name('admin.settings.flush');
+
+    // Taxonomies
+    Route::get('/taxonomies', [TaxonomyController::class, 'index'])->name('admin.taxonomies');
+    Route::get('/taxonomies/{taxonomyKey}', [TaxonomyController::class, 'terms'])->name('admin.taxonomies.terms');
+    Route::post('/taxonomies/{taxonomyKey}/save', [TaxonomyController::class, 'saveTerm'])->name('admin.taxonomies.terms.save');
+    Route::post('/taxonomies/{taxonomyKey}/delete', [TaxonomyController::class, 'deleteTerm'])->name('admin.taxonomies.terms.delete');
+
+    // Media
+    Route::get('/media', [MediaController::class, 'index'])->name('admin.media');
+    Route::post('/media/upload', [MediaController::class, 'upload'])->name('admin.media.upload');
+    Route::post('/media/delete', [MediaController::class, 'delete'])->name('admin.media.delete');
 });

@@ -53,4 +53,36 @@ Route::middleware(['tenant'])->group(function () {
         ]);
     });
 
+    // Listado blog
+    Route::get('/blog', function () {
+        $site = app('currentSite');
+
+        $posts = Content::query()
+            ->where('site_id',$site->id)
+            ->where('type','post')
+            ->where('status','published')
+            ->orderByDesc('published_at')
+            ->paginate(10);
+
+        return view('blog-index', compact('site','posts'));
+    });
+
+    // Post single
+    Route::get('/blog/{slug}', function (string $slug) {
+        $site = app('currentSite');
+
+        $post = Content::query()
+            ->where('site_id',$site->id)
+            ->where('type','post')
+            ->where('status','published')
+            ->where('slug',$slug)
+            ->firstOrFail();
+
+        $meta = $post->meta()->pluck('meta_value','meta_key')->toArray();
+        $title = $post->title;
+        $html  = $post->content ?? '';
+
+        return view('blog-post', compact('site','post','meta','title','html'));
+    });
+
 });

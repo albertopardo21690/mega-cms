@@ -8,10 +8,13 @@ use Illuminate\Support\Str;
 use App\Models\Content;
 use App\Core\Tenancy\TenantManager;
 use App\Core\Content\MetaService;
+use App\Models\Taxonomy;
+use App\Models\TermRelation;
+use App\Core\Taxonomies\TermAssignmentService;
 
 class ContentController extends Controller
 {
-    public function __construct(private TenantManager $tenants, private MetaService $meta) {}
+    public function __construct(private TenantManager $tenants, private MetaService $meta, private TermAssignmentService $terms) {}
 
     private function siteId(): int
     {
@@ -45,6 +48,7 @@ class ContentController extends Controller
             'type' => $type,
             'item' => new Content(['status' => 'draft', 'type' => $type]),
             'meta' => [],
+            'tax' => null, 'tag' => null, 'selectedCategoryIds' => [], 'selectedTagIds' => [],
         ]);
     }
 
@@ -80,6 +84,13 @@ class ContentController extends Controller
         $metaPairs = $this->extractMetaPairs($request);
         $this->meta->setMany($siteId, $item->id, $metaPairs);
 
+        if ($type === 'post') {
+            $cats = $request->input('categories', []);
+            $tags = $request->input('tags', []);
+            $this->terms->setForContent($siteId, $item->id, 'category', $cats);
+            $this->terms->setForContent($siteId, $item->id, 'tag', $tags);
+        }
+
         return redirect()->route('admin.contents.edit', [$type, $item->id])
             ->with('ok', 'Creado correctamente.');
     }
@@ -94,7 +105,27 @@ class ContentController extends Controller
             ->findOrFail($id);
 
         $meta = $this->meta->getAll($siteId, $item->id);
-        return view('admin.contents.edit', compact('type','item','meta'));
+
+        $tax = null;
+        $tag = null;
+        $selectedCategoryIds = [];
+        $selectedTagIds = [];
+
+        if ($type === 'post') {
+            $tax = Taxonomy::query()->where('site_id',$siteId)->where('taxonomy_key','category')->with('terms')->first();
+            $tag = Taxonomy::query()->where('site_id',$siteId)->where('taxonomy_key','tag')->with('terms')->first();
+
+            $selected = TermRelation::query()
+                ->where('site_id',$siteId)
+                ->where('content_id',$item->id)
+                ->pluck('term_id')
+                ->toArray();
+
+            $selectedCategoryIds = $tax ? array_values(array_intersect($selected, $tax->terms->pluck('id')->toArray())) : [];
+            $selectedTagIds      = $tag ? array_values(array_intersect($selected, $tag->terms->pluck('id')->toArray())) : [];
+        }
+
+        return view('admin.contents.edit', compact('type','item','meta','tax','tag','selectedCategoryIds','selectedTagIds'));
     }
 
     public function update(Request $request, string $type, int $id)
@@ -133,6 +164,13 @@ class ContentController extends Controller
 
         $metaPairs = $this->extractMetaPairs($request);
         $this->meta->setMany($siteId, $item->id, $metaPairs);
+
+        if ($type === 'post') {
+            $cats = $request->input('categories', []);
+            $tags = $request->input('tags', []);
+            $this->terms->setForContent($siteId, $item->id, 'category', $cats);
+            $this->terms->setForContent($siteId, $item->id, 'tag', $tags);
+        }
 
         return back()->with('ok', 'Guardado correctamente.');
     }

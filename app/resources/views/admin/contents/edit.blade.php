@@ -59,6 +59,34 @@
       <textarea name="content" rows="14" style="width:720px;">{{ old('content', $item->content) }}</textarea>
     </p>
 
+    @if($type === 'post')
+      <hr>
+      <h2>Taxonomías</h2>
+
+      <h3>Categorías</h3>
+      @php $cats = $tax?->terms ?? collect(); @endphp
+      @foreach($cats as $t)
+        <label style="display:block;">
+          <input type="checkbox" name="categories[]" value="{{ $t->id }}"
+            @checked(in_array($t->id, $selectedCategoryIds ?? []))>
+          {{ $t->name }}
+        </label>
+      @endforeach
+      <p><a href="/admin/taxonomies/category">Gestionar categorías</a></p>
+
+      <h3>Etiquetas</h3>
+      @php $tagsAll = $tag?->terms ?? collect(); @endphp
+      @foreach($tagsAll as $t)
+        <label style="display:block;">
+          <input type="checkbox" name="tags[]" value="{{ $t->id }}"
+            @checked(in_array($t->id, $selectedTagIds ?? []))>
+          {{ $t->name }}
+        </label>
+      @endforeach
+      <p><a href="/admin/taxonomies/tag">Gestionar etiquetas</a></p>
+    @endif
+
+
     <hr>
     <h2>Meta (tipo wp_postmeta)</h2>
     <p>Añade pares <code>meta_key</code> / <code>meta_value</code>. Ej: <code>seo_title</code>, <code>seo_description</code>, <code>featured_image</code>...</p>
@@ -86,6 +114,7 @@
         @endforeach
       </tbody>
     </table>
+    <hr>
 
     <button type="submit">Guardar</button>
   </form>

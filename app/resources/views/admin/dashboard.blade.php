@@ -12,6 +12,8 @@
     <li><a href="/admin/page">Pages</a></li>
     <li><a href="/admin/post">Posts</a></li>
     <li><a href="/admin/settings">Settings</a></li>
+    <li><a href="/admin/taxonomies">Taxonomías</a></li>
+    <li><a href="/admin/media">Media</a></li>
   </ul>
 </body>
 </html>

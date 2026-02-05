@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SitesSeeder::class,
+            TaxonomiesSeeder::class,
         ]);
     }
 
