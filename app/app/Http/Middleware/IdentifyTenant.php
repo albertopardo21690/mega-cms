@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL; // ✅ IMPORTANTE
 use App\Core\Tenancy\TenantManager;
 use App\Core\Tenancy\SubdomainTenantResolver;
 
@@ -19,10 +20,6 @@ class IdentifyTenant
         $host = $request->getHost();
         $site = $this->resolver->resolveFromHost($host);
 
-        // Si no hay tenant, puedes:
-        // A) bloquear
-        // B) redirigir a landing global
-        // Aquí: bloqueamos para que sea explícito.
         if (!$site) {
             return response()->json([
                 'error' => 'Tenant not found for host',
@@ -32,21 +29,20 @@ class IdentifyTenant
 
         $this->tenants->setSite($site);
 
-        // Opcional: set locale/timezone por tenant
         app()->setLocale($site->locale);
         date_default_timezone_set($site->timezone);
 
-        // Compartir en el container para uso rápido
         app()->instance('currentSite', $site);
 
-        // Autoload settings en memoria para este request
         $settings = app(\App\Core\Settings\SettingsService::class)->autoload($site->id);
-
-        // Disponible en todo el request
         app()->instance('tenantSettings', $settings);
-
-        // También para vistas (como WP: options disponibles globalmente)
         view()->share('tenantSettings', $settings);
+
+        // ✅ Forzar host correcto para URLs y Storage::url
+        $root = $request->getSchemeAndHttpHost();
+        config(['app.url' => $root]);
+        config(['filesystems.disks.public.url' => $root . '/storage']);
+        URL::forceRootUrl($root);
 
         return $next($request);
     }
