@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\RecipeController;
 
 Route::middleware(['tenant'])->prefix('admin')->group(function () {
 
@@ -56,4 +57,8 @@ Route::middleware(['tenant'])->prefix('admin')->group(function () {
     Route::get('/media', [MediaController::class, 'index'])->name('admin.media');
     Route::post('/media/upload', [MediaController::class, 'upload'])->name('admin.media.upload');
     Route::post('/media/delete', [MediaController::class, 'delete'])->name('admin.media.delete');
+
+    // Tenants
+    Route::get('/recipes', [RecipeController::class,'index'])->name('admin.recipes');
+    Route::post('/recipes/install', [RecipeController::class,'install'])->name('admin.recipes.install');
 });

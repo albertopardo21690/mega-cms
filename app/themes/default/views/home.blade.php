@@ -13,5 +13,15 @@
   <p><strong>Tema:</strong> {{ $site->theme }}</p>
   <p><strong>Módulos:</strong> {{ implode(', ', $site->modules ?? []) }}</p>
   <p>{{ $tenantSettings['site_tagline'] ?? '' }}</p>
+
+  @php
+    $menu = app(\App\Core\Menus\MenuService::class)->byLocation($site->id,'header');
+  @endphp
+
+  <nav>
+    @foreach($menu as $item)
+      <a href="{{ $item->url }}">{{ $item->label }}</a>
+    @endforeach
+  </nav>
 </body>
 </html>

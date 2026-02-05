@@ -14,6 +14,7 @@
     <li><a href="/admin/settings">Settings</a></li>
     <li><a href="/admin/taxonomies">Taxonomías</a></li>
     <li><a href="/admin/media">Media</a></li>
+    <li><a href="/admin/recipes">Recipes</a></li>
   </ul>
 </body>
 </html>

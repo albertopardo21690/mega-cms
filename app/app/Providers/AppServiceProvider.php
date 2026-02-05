@@ -35,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SettingsService::class);
         $this->app->singleton(MetaService::class);
         $this->app->singleton(\App\Core\Taxonomies\TermAssignmentService::class);
+        $this->app->singleton(\App\Core\Recipes\RecipeInstaller::class);
+        $this->app->singleton(\App\Core\Menus\MenuService::class);
     }
 
     /**

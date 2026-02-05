@@ -81,4 +81,22 @@ Route::middleware(['tenant'])->group(function () {
         ]);
     })->where('slug', '^(?!blog$|admin$|api$|storage$).+');
 
+    Route::get('/sitemap.xml', function () {
+        $site = app('currentSite');
+
+        $pages = \App\Models\Content::query()
+            ->where('site_id',$site->id)
+            ->whereIn('type',['page','post'])
+            ->where('status','published')
+            ->get();
+
+        return response()->view('sitemap', compact('site','pages'))
+            ->header('Content-Type','application/xml');
+    });
+
+    Route::get('/robots.txt', function () {
+        return response("User-agent: *\nAllow: /\nSitemap: ".url('/sitemap.xml'),200)
+            ->header('Content-Type','text/plain');
+    });
+
 });
