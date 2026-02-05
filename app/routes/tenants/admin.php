@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\SettingsController;
 
 Route::middleware(['tenant'])->prefix('admin')->group(function () {
 
@@ -36,4 +37,9 @@ Route::middleware(['tenant'])->prefix('admin')->group(function () {
         ->whereIn('type', ['page','post'])
         ->whereNumber('id')
         ->name('admin.contents.delete');
+
+    Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings');
+    Route::post('/settings/save', [SettingsController::class, 'save'])->name('admin.settings.save');
+    Route::post('/settings/delete', [SettingsController::class, 'delete'])->name('admin.settings.delete');
+    Route::post('/settings/flush', [SettingsController::class, 'flush'])->name('admin.settings.flush');
 });

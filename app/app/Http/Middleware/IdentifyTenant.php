@@ -39,6 +39,15 @@ class IdentifyTenant
         // Compartir en el container para uso rápido
         app()->instance('currentSite', $site);
 
+        // Autoload settings en memoria para este request
+        $settings = app(\App\Core\Settings\SettingsService::class)->autoload($site->id);
+
+        // Disponible en todo el request
+        app()->instance('tenantSettings', $settings);
+
+        // También para vistas (como WP: options disponibles globalmente)
+        view()->share('tenantSettings', $settings);
+
         return $next($request);
     }
 }

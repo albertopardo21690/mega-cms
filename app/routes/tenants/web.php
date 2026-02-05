@@ -39,6 +39,8 @@ Route::middleware(['tenant'])->group(function () {
             ->where('slug', $slug)
             ->firstOrFail();
 
+        $meta = $page->meta()->pluck('meta_value','meta_key')->toArray();
+
         $title = app(\App\Core\Hooks\HookManager::class)->applyFilters('the_title', $page->title, $page);
         $html  = app(\App\Core\Hooks\HookManager::class)->applyFilters('the_content', $page->content ?? '', $page);
 
@@ -47,6 +49,7 @@ Route::middleware(['tenant'])->group(function () {
             'page' => $page,
             'title' => $title,
             'html' => $html,
+            'meta' => $meta,
         ]);
     });
 

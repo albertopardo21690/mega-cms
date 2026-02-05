@@ -10,6 +10,8 @@ use App\Core\Tenancy\TenantManager;
 use App\Core\Tenancy\SubdomainTenantResolver;
 use App\Core\Hooks\HookManager;
 use App\Core\Modules\ModuleManager;
+use App\Core\Settings\SettingsService;
+use App\Core\Content\MetaService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ThemeManager::class, fn($app) =>
             new ThemeManager($app->make(TenantManager::class))
         );
+
+        $this->app->singleton(SettingsService::class);
+        $this->app->singleton(MetaService::class);
     }
 
     /**

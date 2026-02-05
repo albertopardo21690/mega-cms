@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Content;
 use App\Core\Tenancy\TenantManager;
+use App\Core\Content\MetaService;
 
 class ContentController extends Controller
 {
-    public function __construct(private TenantManager $tenants) {}
+    public function __construct(private TenantManager $tenants, private MetaService $meta) {}
 
     private function siteId(): int
     {
@@ -43,6 +44,7 @@ class ContentController extends Controller
         return view('admin.contents.edit', [
             'type' => $type,
             'item' => new Content(['status' => 'draft', 'type' => $type]),
+            'meta' => [],
         ]);
     }
 
@@ -75,6 +77,9 @@ class ContentController extends Controller
             'published_at' => $data['status'] === 'published' ? now() : null,
         ]);
 
+        $metaPairs = $this->extractMetaPairs($request);
+        $this->meta->setMany($siteId, $item->id, $metaPairs);
+
         return redirect()->route('admin.contents.edit', [$type, $item->id])
             ->with('ok', 'Creado correctamente.');
     }
@@ -88,7 +93,8 @@ class ContentController extends Controller
             ->where('type', $type)
             ->findOrFail($id);
 
-        return view('admin.contents.edit', compact('type','item'));
+        $meta = $this->meta->getAll($siteId, $item->id);
+        return view('admin.contents.edit', compact('type','item','meta'));
     }
 
     public function update(Request $request, string $type, int $id)
@@ -124,6 +130,9 @@ class ContentController extends Controller
                 ? ($item->published_at ?? now())
                 : null,
         ])->save();
+
+        $metaPairs = $this->extractMetaPairs($request);
+        $this->meta->setMany($siteId, $item->id, $metaPairs);
 
         return back()->with('ok', 'Guardado correctamente.');
     }
@@ -162,4 +171,21 @@ class ContentController extends Controller
             $i++;
         }
     }
+
+    private function extractMetaPairs(Request $request): array
+    {
+        // viene como meta_key[] y meta_value[]
+        $keys = $request->input('meta_key', []);
+        $vals = $request->input('meta_value', []);
+
+        $pairs = [];
+        for ($i = 0; $i < max(count($keys), count($vals)); $i++) {
+            $k = trim((string)($keys[$i] ?? ''));
+            $v = (string)($vals[$i] ?? '');
+            if ($k === '') continue;
+            $pairs[$k] = $v;
+        }
+        return $pairs;
+    }
+
 }

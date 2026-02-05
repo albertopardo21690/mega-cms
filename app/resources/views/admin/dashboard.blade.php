@@ -11,6 +11,7 @@
   <ul>
     <li><a href="/admin/page">Pages</a></li>
     <li><a href="/admin/post">Posts</a></li>
+    <li><a href="/admin/settings">Settings</a></li>
   </ul>
 </body>
 </html>

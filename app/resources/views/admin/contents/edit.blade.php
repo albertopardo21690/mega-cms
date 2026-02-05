@@ -59,6 +59,34 @@
       <textarea name="content" rows="14" style="width:720px;">{{ old('content', $item->content) }}</textarea>
     </p>
 
+    <hr>
+    <h2>Meta (tipo wp_postmeta)</h2>
+    <p>Añade pares <code>meta_key</code> / <code>meta_value</code>. Ej: <code>seo_title</code>, <code>seo_description</code>, <code>featured_image</code>...</p>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        @php
+          $rows = [];
+          foreach(($meta ?? []) as $k => $v) $rows[] = ['k'=>$k,'v'=>$v];
+          // 3 filas extra vacías para añadir rápido
+          for($i=0;$i<3;$i++) $rows[] = ['k'=>'','v'=>''];
+        @endphp
+
+        @foreach($rows as $r)
+          <tr>
+            <td><input name="meta_key[]" value="{{ $r['k'] }}" style="width:260px;"></td>
+            <td><input name="meta_value[]" value="{{ $r['v'] }}" style="width:520px;"></td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+
     <button type="submit">Guardar</button>
   </form>
 </body>

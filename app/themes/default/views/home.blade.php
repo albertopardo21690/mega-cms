@@ -12,5 +12,6 @@
   <p><strong>Site ID:</strong> {{ $site->id }}</p>
   <p><strong>Tema:</strong> {{ $site->theme }}</p>
   <p><strong>Módulos:</strong> {{ implode(', ', $site->modules ?? []) }}</p>
+  <p>{{ $tenantSettings['site_tagline'] ?? '' }}</p>
 </body>
 </html>
