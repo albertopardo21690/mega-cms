@@ -1,5 +1,9 @@
 <footer style="padding:16px 24px;border-top:1px solid #eee;margin-top:32px;">
-  <div style="max-width:980px;margin:0 auto;font-size:13px;opacity:.7;">
-    © {{ date('Y') }} {{ $site->name ?? 'Sitio' }} · Powered by Mega-CMS
+  <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+    @foreach($footerMenu as $item)
+      <a href="{{ $item['url'] }}" style="text-decoration:none;opacity:.85;">
+        {{ $item['label'] }}
+      </a>
+    @endforeach
   </div>
 </footer>

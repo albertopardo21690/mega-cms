@@ -8,9 +8,15 @@
     </div>
 
     <nav style="display:flex;gap:12px;align-items:center;">
-      <a href="/" style="text-decoration:none;">Inicio</a>
-      <a href="/blog" style="text-decoration:none;">Blog</a>
-      <a href="/admin" style="text-decoration:none;">Admin</a>
-    </nav>
+      @forelse($headerMenu as $item)
+        <a href="{{ $item['url'] }}" style="text-decoration:none;">
+          {{ $item['label'] }}
+        </a>
+      @empty
+        <a href="/" style="text-decoration:none;">Inicio</a>
+        <a href="/blog" style="text-decoration:none;">Blog</a>
+      @endforelse
+</nav>
+
   </div>
 </header>

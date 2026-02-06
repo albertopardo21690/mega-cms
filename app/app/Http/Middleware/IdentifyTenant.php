@@ -53,6 +53,14 @@ class IdentifyTenant
         // Assets helper
         app()->instance('themePath', "/themes/{$theme}");
 
+        $menuService = app(\App\Core\Menus\MenuService::class);
+
+$headerMenu = $menuService->getTree($site->id, 'header');
+$footerMenu = $menuService->getTree($site->id, 'footer');
+
+view()->share('headerMenu', $headerMenu);
+view()->share('footerMenu', $footerMenu);
+
         return $next($request);
     }
 }
