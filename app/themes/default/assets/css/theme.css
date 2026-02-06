@@ -114,3 +114,33 @@ main {
     background: transparent;
   }
 }
+
+/* Animaciones suaves */
+.nav-panel {
+  transition: opacity .15s ease, transform .15s ease;
+}
+.nav-panel[hidden] {
+  display: block;           /* para permitir animar */
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  border-width: 0 !important;
+  margin: 0 !important;
+}
+
+.submenu {
+  transition: max-height .2s ease, opacity .2s ease;
+}
+.submenu[hidden] {
+  display: block;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.submenu:not([hidden]) {
+  max-height: 1200px; /* suficiente para menús normales */
+  opacity: 1;
+}
