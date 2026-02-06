@@ -34,7 +34,16 @@ class MenuController extends Controller
         // padres posibles = todos menos él mismo (lo filtramos en vista por simplicidad)
         $parents = $items;
 
-        return view('admin.menus.edit', compact('location','menu','items','parents'));
+        $ddItemsJson = $items->map(function($i){
+            return [
+                'id' => (int)$i->id,
+                'label' => (string)$i->label,
+                'parent_id' => $i->parent_id ? (int)$i->parent_id : null,
+            ];
+        })->values()->toJson(JSON_UNESCAPED_UNICODE);
+
+
+        return view('admin.menus.edit', compact('location','menu','items','parents','ddItemsJson'));
     }
 
     public function addItem(string $location, Request $request, MenuService $menus)
