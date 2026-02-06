@@ -104,4 +104,45 @@ class MenuController extends Controller
 
         return redirect("/admin/menus/{$location}");
     }
+
+    public function saveJson(string $location, Request $request, MenuService $menus)
+    {
+        $site = app('currentSite');
+
+        $tree = $request->input('tree', []);
+        if (!is_array($tree)) {
+            return response()->json(['ok'=>false,'error'=>'Invalid tree'], 422);
+        }
+
+        $sortCounter = 10;
+
+        $apply = function(array $nodes, ?int $parentId) use (&$apply, &$sortCounter, $site) {
+            foreach ($nodes as $n) {
+                $id = (int)($n['id'] ?? 0);
+                if ($id <= 0) continue;
+
+                \App\Models\MenuItem::query()
+                    ->where('site_id', $site->id)
+                    ->where('id', $id)
+                    ->update([
+                        'parent_id' => $parentId,
+                        'sort' => $sortCounter,
+                    ]);
+
+                $sortCounter += 10;
+
+                $children = $n['children'] ?? [];
+                if (is_array($children) && count($children)) {
+                    $apply($children, $id);
+                }
+            }
+        };
+
+        $apply($tree, null);
+
+        $menus->flush($site->id, $location);
+
+        return response()->json(['ok'=>true]);
+    }
+
 }
