@@ -144,3 +144,46 @@ main {
   max-height: 1200px; /* suficiente para menús normales */
   opacity: 1;
 }
+
+/* Active state */
+.menu-item--active > .menu-row > .menu-link {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Link externo (pequeña pista visual opcional) */
+.menu-link[target="_blank"]::after {
+  content: " ↗";
+  font-size: 0.9em;
+  opacity: .7;
+}
+
+/* Mega menu (solo nivel 0 en desktop) */
+@media (min-width: 769px) {
+  .menu-item--mega > .submenu {
+    min-width: 520px;
+    padding: 14px;
+  }
+
+  .menu-item--mega > .submenu > .menu {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+    gap: 8px 14px;
+    align-items: start;
+  }
+
+  .menu-item--mega > .submenu .menu-item {
+    position: static; /* evita que sub-submenus rompan el grid */
+  }
+
+  /* sub-submenus dentro de mega: que queden “inline” bajo el item */
+  .menu-item--mega .menu-level-2 {
+    position: static !important;
+    border: 0;
+    padding: 6px 0 0 10px;
+    display: flex !important;
+    flex-direction: column;
+    gap: 6px;
+  }
+}
