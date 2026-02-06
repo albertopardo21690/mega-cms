@@ -1,28 +1,43 @@
-<header style="padding:16px 24px;border-bottom:1px solid #eee;">
-  <div style="max-width:980px;margin:0 auto;display:flex;gap:16px;align-items:center;justify-content:space-between;">
-    <div>
-      <strong>{{ $site->name ?? 'Sitio' }}</strong>
-      @if(!empty($tenantSettings['site_tagline'] ?? null))
-        <div style="font-size:13px;opacity:.75;">{{ $tenantSettings['site_tagline'] }}</div>
-      @endif
-    </div>
+@php
+  $siteName = $site->name ?? 'Sitio';
+@endphp
 
-    <nav class="nav">
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mainNav">
-        ☰ Menú
-      </button>
+<nav class="navbar navbar-expand-lg bg-white nav-shadow sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">{{ $siteName }}</a>
 
-      <div id="mainNav" class="nav-panel" data-nav-panel hidden>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         @if(!empty($headerMenu))
-          @include('partials.menu-tree', ['items' => $headerMenu, 'level' => 0])
-        @else
-          <ul class="menu menu-level-0">
-            <li class="menu-item"><div class="menu-row"><a class="menu-link" href="/">Inicio</a></div></li>
-            <li class="menu-item"><div class="menu-row"><a class="menu-link" href="/blog">Blog</a></div></li>
-          </ul>
-        @endif
-      </div>
-    </nav>
+          @foreach($headerMenu as $item)
+            @php $hasKids = !empty($item['children']); @endphp
 
+            @if($hasKids)
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{{ $item['url'] ?? '#' }}" data-bs-toggle="dropdown">
+                  {{ $item['label'] ?? 'Item' }}
+                </a>
+                <ul class="dropdown-menu">
+                  @foreach($item['children'] as $ch)
+                    <li><a class="dropdown-item" href="{{ $ch['url'] ?? '#' }}">{{ $ch['label'] ?? 'Subitem' }}</a></li>
+                  @endforeach
+                </ul>
+              </li>
+            @else
+              <li class="nav-item">
+                <a class="nav-link" href="{{ $item['url'] ?? '#' }}">{{ $item['label'] ?? 'Item' }}</a>
+              </li>
+            @endif
+          @endforeach
+        @else
+          <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
+        @endif
+      </ul>
+    </div>
   </div>
-</header>
+</nav>

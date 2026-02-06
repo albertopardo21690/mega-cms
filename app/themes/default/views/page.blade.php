@@ -1,19 +1,12 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ $meta['seo_title'] ?? $title }}</title>
-  <meta name="description" content="{{ $meta['seo_description'] ?? '' }}">
-</head>
-<body>
-  @extends('layouts.app')
+@extends('layouts.app')
 
-  @section('content')
+@section('content')
+<section class="py-5">
+  <div class="container" style="max-width:860px">
+    <h1 class="h3 mb-3">{{ $title ?? ($page->title ?? '') }}</h1>
     <article>
-        <h1>{{ $title }}</h1>
-        {!! $html !!}
+      {!! $html ?? ($page->content ?? '') !!}
     </article>
-  @endsection
-</body>
-</html>
+  </div>
+</section>
+@endsection
