@@ -71,13 +71,17 @@
     <li class="{{ $classes }}">
       <div class="menu-row">
         <a
-          class="menu-link"
+          class="menu-link {{ !empty($item['css_class']) ? $item['css_class'] : '' }}"
           href="{{ $url }}"
-          @if($external) target="_blank" rel="noopener noreferrer" @endif
+          @if(!empty($item['title'])) title="{{ $item['title'] }}" @endif
+          @if(!empty($item['target']) && $item['target'] !== '_self') target="{{ $item['target'] }}" @endif
+          @if(!empty($item['rel'])) rel="{{ $item['rel'] }}" @else @if($external) rel="noopener noreferrer" @endif @endif
           aria-current="{{ $activeSelf ? 'page' : 'false' }}"
         >
+          @if(!empty($item['icon']))<span class="menu-icon">{!! e($item['icon']) !!}</span>@endif
           {{ $item['label'] }}
         </a>
+
 
         @if($hasChildren)
           <button

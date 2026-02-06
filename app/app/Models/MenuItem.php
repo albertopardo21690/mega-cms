@@ -8,8 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MenuItem extends Model
 {
     protected $fillable = [
-        'site_id', 'menu_id','parent_id','label','url','type','ref','sort','is_visible'
+        'site_id','menu_id','parent_id',
+        'label','title','url','target','rel','css_class','icon',
+        'type','ref',
+        'sort','is_visible'
     ];
+
 
     public function menu(): BelongsTo
     {

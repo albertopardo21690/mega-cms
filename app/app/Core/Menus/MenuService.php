@@ -29,7 +29,12 @@ class MenuService
                     'id' => (int) $i->id,
                     'parent_id' => $i->parent_id ? (int) $i->parent_id : null,
                     'label' => (string) $i->label,
+                    'title' => (string) ($i->title ?? ''),
                     'url' => (string) $i->url,
+                    'target' => (string) ($i->target ?? '_self'),
+                    'rel' => (string) ($i->rel ?? ''),
+                    'css_class' => (string) ($i->css_class ?? ''),
+                    'icon' => (string) ($i->icon ?? ''),
                     'children' => [],
                 ])->toArray();
 
