@@ -4,6 +4,7 @@ namespace App\Core\Menus;
 
 use App\Models\Menu;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 class MenuService
 {
@@ -19,18 +20,27 @@ class MenuService
 
             if (!$menu) return [];
 
-            $items = $menu->items()
-                ->where('is_visible', true)
-                ->orderBy('sort')
-                ->orderBy('id')
-                ->get()
-                ->map(fn($i) => [
-                    'id' => $i->id,
-                    'parent_id' => $i->parent_id,
-                    'label' => $i->label,
-                    'url' => $i->url,
-                    'children' => [],
-                ])->toArray();
+            $q = $menu->items()
+    ->where('site_id', $siteId)
+    ->orderBy('sort')
+    ->orderBy('id');
+
+            // ✅ Compatible: si existe is_visible, mostramos solo visibles
+            if (Schema::hasColumn('menu_items', 'is_visible')) {
+                $q->where('is_visible', true);
+            }
+
+            $items = $q->get()
+                ->map(function ($i) {
+                    return [
+                        'id' => (int) $i->id,
+                        'parent_id' => $i->parent_id ? (int) $i->parent_id : null,
+                        'label' => (string) $i->label,
+                        'url' => (string) $i->url,
+                        'children' => [],
+                    ];
+                })
+                ->toArray();
 
             return $this->buildTree($items);
         });
@@ -39,7 +49,9 @@ class MenuService
     private function buildTree(array $items): array
     {
         $byId = [];
-        foreach ($items as $it) $byId[$it['id']] = $it;
+        foreach ($items as $it) {
+            $byId[$it['id']] = $it;
+        }
 
         $tree = [];
         foreach ($byId as $id => $it) {
