@@ -4,9 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL; // ✅ IMPORTANTE
+use Illuminate\Support\Facades\URL;
 use App\Core\Tenancy\TenantManager;
 use App\Core\Tenancy\SubdomainTenantResolver;
+use Illuminate\Support\Facades\View;
 
 class IdentifyTenant
 {
@@ -43,6 +44,14 @@ class IdentifyTenant
         config(['app.url' => $root]);
         config(['filesystems.disks.public.url' => $root . '/storage']);
         URL::forceRootUrl($root);
+
+        $theme = $site->theme ?? 'default';
+
+        // Views del theme
+        View::addLocation(base_path("themes/{$theme}/views"));
+
+        // Assets helper
+        app()->instance('themePath', "/themes/{$theme}");
 
         return $next($request);
     }

@@ -3,25 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ $title }}</title>
+  <title>{{ $title ?? ($site->name ?? 'Inicio') }}</title>
 </head>
 <body>
-  <h1>{{ $title }}</h1>
+  @extends('layouts.app')
 
-  <p><strong>Tenant:</strong> {{ $site->subdomain }}</p>
-  <p><strong>Site ID:</strong> {{ $site->id }}</p>
-  <p><strong>Tema:</strong> {{ $site->theme }}</p>
-  <p><strong>Módulos:</strong> {{ implode(', ', $site->modules ?? []) }}</p>
-  <p>{{ $tenantSettings['site_tagline'] ?? '' }}</p>
-
-  @php
-    $menu = app(\App\Core\Menus\MenuService::class)->byLocation($site->id,'header');
-  @endphp
-
-  <nav>
-    @foreach($menu as $item)
-      <a href="{{ $item->url }}">{{ $item->label }}</a>
-    @endforeach
-  </nav>
+    @section('content')
+    <h1>{{ $site->name }}</h1>
+    <p>Bienvenido a {{ $site->name }}</p>
+    @endsection
 </body>
 </html>

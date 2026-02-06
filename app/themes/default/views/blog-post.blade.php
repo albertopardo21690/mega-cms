@@ -6,8 +6,13 @@
   <meta name="description" content="{{ $meta['seo_description'] ?? '' }}">
 </head>
 <body>
-<p><a href="/blog">← Blog</a></p>
-<h1>{{ $title }}</h1>
-<div>{!! $html !!}</div>
+  @extends('layouts.app')
+
+  @section('content')
+  <article>
+      <h1>{{ $title }}</h1>
+      {!! $html !!}
+  </article>
+  @endsection
 </body>
 </html>

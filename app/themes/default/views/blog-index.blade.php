@@ -7,13 +7,21 @@
 <p><a href="/">← Inicio</a></p>
 
 @foreach($posts as $p)
-  <article style="margin-bottom:16px;">
-    <h2><a href="/blog/{{ $p->slug }}">{{ $p->title }}</a></h2>
-    <small>{{ $p->published_at }}</small>
-    <p>{{ $p->excerpt }}</p>
-  </article>
-@endforeach
+  @extends('layouts.app')
 
-{{ $posts->links() }}
+  @section('content')
+  <h1>Blog</h1>
+
+  @foreach($posts as $post)
+      <article>
+          <h2>
+              <a href="/blog/{{ $post->slug }}">{{ $post->title }}</a>
+          </h2>
+      </article>
+  @endforeach
+
+  {{ $posts->links() }}
+  @endsection
+
 </body>
 </html>
