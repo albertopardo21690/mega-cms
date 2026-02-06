@@ -7,16 +7,16 @@
       @endif
     </div>
 
-    <nav style="display:flex;gap:12px;align-items:center;">
-      @forelse($headerMenu as $item)
-        <a href="{{ $item['url'] }}" style="text-decoration:none;">
-          {{ $item['label'] }}
-        </a>
-      @empty
-        <a href="/" style="text-decoration:none;">Inicio</a>
-        <a href="/blog" style="text-decoration:none;">Blog</a>
-      @endforelse
-</nav>
+    <nav class="nav">
+      @if(!empty($headerMenu))
+        @include('partials.menu-tree', ['items' => $headerMenu, 'level' => 0])
+      @else
+        <ul class="menu menu-level-0">
+          <li class="menu-item"><a class="menu-link" href="/">Inicio</a></li>
+          <li class="menu-item"><a class="menu-link" href="/blog">Blog</a></li>
+        </ul>
+      @endif
+    </nav>
 
   </div>
 </header>

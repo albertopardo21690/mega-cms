@@ -13,3 +13,51 @@ header, footer {
 main {
     padding: 24px;
 }
+
+/* Menú base */
+.nav { display: flex; align-items: center; }
+.menu { list-style: none; margin: 0; padding: 0; display: flex; gap: 12px; align-items: center; }
+.menu-item { position: relative; }
+.menu-link { text-decoration: none; display: inline-block; padding: 6px 8px; }
+
+/* Submenús (dropdown) */
+.menu-item.has-children > .menu { 
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 50;
+}
+
+/* Mostrar dropdown en hover/focus */
+.menu-item.has-children:hover > .menu,
+.menu-item.has-children:focus-within > .menu {
+  display: flex;
+}
+
+/* Nivel 2+ (submenu dentro de submenu) */
+.menu-level-2,
+.menu-level-3,
+.menu-level-4 {
+  top: 0;
+  left: 100%;
+  margin-left: 8px;
+}
+
+/* Responsive simple: apila */
+@media (max-width: 768px) {
+  .menu { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .menu-item.has-children > .menu {
+    position: static;
+    border: none;
+    padding: 6px 0 0 12px;
+    display: flex; /* en móvil lo dejamos expandido por simplicidad */
+  }
+}
