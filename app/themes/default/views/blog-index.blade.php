@@ -1,27 +1,25 @@
-<!doctype html>
-<html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blog - {{ $site->name }}</title></head>
-<body>
-<h1>Blog - {{ $site->name }}</h1>
-<p><a href="/">← Inicio</a></p>
+@extends('layouts.app')
 
-@foreach($posts as $p)
-  @extends('layouts.app')
-
-  @section('content')
+@section('content')
   <h1>Blog</h1>
 
-  @foreach($posts as $post)
-      <article>
-          <h2>
-              <a href="/blog/{{ $post->slug }}">{{ $post->title }}</a>
-          </h2>
+  @if($posts->count() === 0)
+    <p>No hay entradas todavía.</p>
+  @else
+    @foreach($posts as $post)
+      <article style="margin: 0 0 18px 0;">
+        <h2 style="margin: 0 0 6px 0;">
+          <a href="/blog/{{ $post->slug }}">{{ $post->title }}</a>
+        </h2>
+
+        @if(!empty($post->excerpt))
+          <p style="margin: 0;">{{ $post->excerpt }}</p>
+        @endif
       </article>
-  @endforeach
+    @endforeach
 
-  {{ $posts->links() }}
-  @endsection
-
-</body>
-</html>
+    <div style="margin-top: 18px;">
+      {{ $posts->links() }}
+    </div>
+  @endif
+@endsection
